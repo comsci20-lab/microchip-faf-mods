@@ -125,18 +125,24 @@ class RuntimeTests(unittest.TestCase):
         self.assertIn('Choose Energy or Mass', self.lua.eval('Status()'))
         self.assertEqual(self.lua.eval('table.getn(chats)'), 0)
 
-    def test_one_allies_chat_message_reports_round_amounts(self):
+    def test_allies_chat_reports_each_resource_and_recipient(self):
         self.lua.execute('receive(data)')
-        self.assertEqual(self.lua.eval('table.getn(chats)'), 1)
+        self.assertEqual(self.lua.eval('table.getn(chats)'), 2)
         self.assertEqual(self.lua.eval('chats[1].message.to'), 'allies')
-        self.assertIn('399 mass and 249 energy to Ally', self.lua.eval('chats[1].message.text'))
+        self.assertEqual(self.lua.eval('chats[1].message.text'), 'Sent Energy 249 to Ally')
+        self.assertEqual(self.lua.eval('chats[2].message.text'), 'Sent Mass 399 to Ally')
+
+    def test_energy_only_omits_mass_notice(self):
+        self.lua.execute('saved.targets.Ally={ENERGY=true}; receive(data)')
+        self.assertEqual(self.lua.eval('table.getn(chats)'), 1)
+        self.assertEqual(self.lua.eval('chats[1].message.text'), 'Sent Energy 249 to Ally')
 
     def test_rounds_require_three_wall_seconds_and_thirty_game_ticks(self):
         self.lua.execute('receive(data); tick=130; now=12.99; receive(data)')
         self.assertEqual(self.lua.eval('table.getn(sent)'), 1)
         self.lua.execute('tick=130; now=13; receive(data)')
         self.assertEqual(self.lua.eval('table.getn(sent)'), 2)
-        self.assertEqual(self.lua.eval('table.getn(chats)'), 2)
+        self.assertEqual(self.lua.eval('table.getn(chats)'), 4)
         self.lua.execute('tick=159; now=16; receive(data)')
         self.assertEqual(self.lua.eval('table.getn(sent)'), 2)
         self.lua.execute('tick=160; now=16; receive(data)')

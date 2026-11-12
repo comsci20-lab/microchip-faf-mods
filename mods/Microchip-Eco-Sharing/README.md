@@ -38,3 +38,5 @@ including the separate Microchip Team Colour Bands button.
 
 To install manually, extract the **Microchip-Eco-Sharing** folder into your FAF
 Mods folder and enable **Microchip Eco Sharing** in UI Mod Manager. Restart the game.
+
+Version 5 reports each gift separately to allied chat: `Sent Energy 232 to Player` or `Sent Mass 50 to Player`. Zero amounts are omitted. These are the requested amounts when the normal simulation callback is submitted; the game's receipt confirms what actually arrived. The sharing interval remains three real and simulation seconds.

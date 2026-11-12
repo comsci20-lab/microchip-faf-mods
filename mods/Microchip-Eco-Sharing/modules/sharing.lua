@@ -31,14 +31,20 @@ function SelectionCount(value)
     return count
 end
 
-local function Announce(focus, mass, energy, recipients)
+local function Announce(focus, gift)
     local army = GetArmiesTable().armiesTable[focus]
-    local destination = table.getn(recipients) == 1 and recipients[1] or (table.getn(recipients) .. ' allies')
-    -- Fractions are processed asynchronously; the normal FAF receipt reports exact amounts received.
-    local message = string.format('[Auto-share] Sending about %d mass and %d energy to %s.', mass, energy, destination)
     local ok, problem = pcall(function()
         local chat = import('/lua/ui/game/chat/ChatController.lua')
-        SessionSendChatMessage(chat.FindClients(), {from=army.nickname, to='allies', Chat=true, text=message})
+        local clients = chat.FindClients()
+        local function Send(resource, amount)
+            amount = math.floor(amount or 0)
+            if amount <= 0 then return end
+            local message = string.format('Sent %s %d to %s', resource, amount, gift.name)
+            SessionSendChatMessage(clients, {from=army.nickname, to='allies', Chat=true, Identifier='Chat', text=message})
+        end
+        -- Announce each requested gift without waiting for the asynchronous sim receipt.
+        Send('Energy', gift.EnergyAmount)
+        Send('Mass', gift.MassAmount)
     end)
     if not ok then WARN('Microchip Eco Sharing chat: ' .. tostring(problem)) end
 end
@@ -82,7 +88,7 @@ local function Receive(data)
     end
     local allies = Allies()
     local plan = Allocate.Plan(current,GetEconomyTotals(),allies,scores,tick,lastSent)
-    local sent, mass, energy, recipients = false, 0, 0, {}
+    local sent = false
     for _, gift in ipairs(plan) do
         -- Recheck alliance and authority immediately before normal UI callbacks.
         if GetFocusArmy() ~= focus or IsObserver() then break end
@@ -92,14 +98,12 @@ local function Receive(data)
             if gift.Mass>0 then lastSent[gift.id].MASS=tick end
             if gift.Energy>0 then lastSent[gift.id].ENERGY=tick end
             status='Shared surplus with '..gift.name
-            mass=mass+(gift.MassAmount or 0); energy=energy+(gift.EnergyAmount or 0)
-            table.insert(recipients, gift.name)
+            Announce(focus, gift)
             sent=true
         end
     end
     if sent then
         lastRoundTick=tick; lastRoundTime=now
-        Announce(focus, mass, energy, recipients)
     else
         status='Waiting for surplus above reserves and empty selected allies'
     end
