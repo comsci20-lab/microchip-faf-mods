@@ -47,5 +47,4 @@ integration tests remain in the engine repository. Original icon credits include
 Caliber, BlackYps and Balthazar; preserve the attribution in the Icon Mod.
 
 Initial source snapshot: `comsci20-lab/faf-re` mods branch at
-`f3266c91bc7f36f8f02cee420f4983847724c640`. Existing releases on that repository
-remain available; this repository is the standalone home for future mod releases.
+`f3266c91bc7f36f8f02cee420f4983847724c640`. Mod releases are now published here; engine work remains in the faf-re fork.
