@@ -14,6 +14,7 @@ Standalone UI mods for Forged Alliance Forever, by Microchip.
 | F11 Connectivity | `Microchip-F11-Lag-Connectivity-Screen` | Sorted by total wait; optional "who is lagging?" chat bot (UI Mod Tools); wait metrics require the updated engine |
 | Icon Mod | `Microchip-Icon-Mod` | Live icon scaling requires the updated engine and UI Mod Tools |
 | Offline Chat | `Microchip-Offline-Chat` | Compatible engine plus separately installed translator and language packs |
+| Threat Alerts | `Microchip-Threat-Alerts` | Local alerts for newly spotted major threats; requires the updated engine |
 | Team Colour Bands | `Microchip-Team-Colour-Bands` | Display-only team colours |
 
 ## Install or update
