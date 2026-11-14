@@ -104,6 +104,9 @@ function Ranked(clients)
     end
     table.sort(rows, function(a, b)
         if not not a.client.connected ~= not not b.client.connected then return not not a.client.connected end
+        local at, bt = a.totalWaitSeconds, b.totalWaitSeconds
+        if (at ~= nil) ~= (bt ~= nil) then return at ~= nil end
+        if at and at ~= bt then return at > bt end
         if not not a.measured ~= not not b.measured then return not not a.measured end
         if a.measured and a.percent ~= b.percent then return a.percent > b.percent end
         if a.measured and a.longest ~= b.longest then return a.longest > b.longest end

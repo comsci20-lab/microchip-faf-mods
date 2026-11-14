@@ -62,7 +62,7 @@ function PingUpdate()
     end
     if observed <= 0 then notice:SetText('Wait timing unavailable: requires the updated faf-re engine.')
     elseif observed < 29.9 then notice:SetText(string.format('Collecting wait history: %.0f / 30 seconds. Shared waits can overlap.', observed))
-    else notice:SetText('Worst wait first. Shared waits overlap; network or CPU delays can cause waits.') end
+    else notice:SetText('Most total wait first. Shared waits overlap; network or CPU delays can cause waits.') end
 end
 function CloseWindow()
     if worker then KillThread(worker); worker = nil end

@@ -9,8 +9,9 @@ Standalone UI mods for Forged Alliance Forever, by Microchip.
 | Chat Mention | `Microchip-Chat-Mention` | Chat mention popups; UI Mod Tools for options |
 | Client Test Recorder | `Microchip-Client-Test` | Passive local diagnostics; extra metrics need the updated engine |
 | Eco Sharing | `Microchip-Eco-Sharing` | Share selected surplus with empty allies |
+| Lobby Ready Alert | `Microchip-Lobby-Ready-Alert` | Alert when all lobby players are ready |
 | Logo Stamps | `Microchip-Evil-Stamp` | Ctrl+Shift+L: MC Chip or Drunk Husky; painting enabled |
-| F11 Connectivity | `Microchip-F11-Lag-Connectivity-Screen` | Per-peer wait metrics require the updated engine |
+| F11 Connectivity | `Microchip-F11-Lag-Connectivity-Screen` | Sorted by total wait; optional "who is lagging?" chat bot (UI Mod Tools); wait metrics require the updated engine |
 | Icon Mod | `Microchip-Icon-Mod` | Live icon scaling requires the updated engine and UI Mod Tools |
 | Offline Chat | `Microchip-Offline-Chat` | Compatible engine plus separately installed translator and language packs |
 | Team Colour Bands | `Microchip-Team-Colour-Bands` | Display-only team colours |

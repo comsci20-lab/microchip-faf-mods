@@ -188,4 +188,25 @@ class F11Tests(unittest.TestCase):
         for invalid in (None, -1, float('nan'), float('inf')):
             self.assertEqual(fmt(invalid), '--')
 
+class LagBotTests(unittest.TestCase):
+    def setUp(self):
+        self.lua = LuaRuntime(unpack_returned_tuples=True)
+        self.lua.execute((MOD / 'modules/lagbot.lua').read_text(encoding='utf-8-sig'))
+        self.g = self.lua.globals()
+
+    def test_questions_from_replay_chat(self):
+        for text in ('lag?', 'who lag?', 'who lags', 'whos lagging', "who's lagging", 'whose lagging',
+                     'who is actually lagging?', 'someone lagging', 'laggy???', 'am i lagging ?', 'Who LAGS'):
+            self.assertTrue(self.g.IsLagQuestion(text), text)
+
+    def test_ignores_complaints_and_bot_replies(self):
+        for text in ('this lag', 'bit laggy', 'lag fest', 'flag the nuke?', 'Bot: Top lagger is Bob (5.0s).', None):
+            self.assertFalse(self.g.IsLagQuestion(text), text)
+
+    def test_reply_names_top_lagger(self):
+        fmt = self.lua.eval('function(s) return s .. "s" end')
+        ranked = self.lua.table_from([{'client': {'name': 'Bob'}, 'totalWaitSeconds': 12}], recursive=True)
+        self.assertEqual(self.g.ReplyText(ranked, fmt), 'Bot: Top lagger is Bob (12s total game wait).')
+        self.assertEqual(self.g.ReplyText(self.lua.table_from([]), fmt), 'Bot: No lag measured yet.')
+
 if __name__ == '__main__': unittest.main()
