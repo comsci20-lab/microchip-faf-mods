@@ -120,20 +120,20 @@ function Ranked(clients)
 end
 -- maxSP: the speed this client's PC measured it can run (CLIMSG_IntParam, every client sends it,
 -- adjustable speed or not). The game runs no faster than the lowest one.
-local function MaxSpeed(client)
+function MaxSpeed(client)
     local rate = client and client.maxSP
     -- 50 is the engine's starting value (CClientBase) before the client's first report.
     if type(rate) ~= 'number' or rate ~= rate or rate < -10 or rate >= 50 then return nil end
     -- Anything above +10 is far faster than a game ever runs; cap it so it reads as "+10".
     return math.min(rate, 10)
 end
-local function FormatSpeed(rate)
+function FormatSpeed(rate)
     if not rate then return '--' end
     return rate >= 0 and ('+' .. string.format('%d', rate)) or string.format('%d', rate)
 end
 -- Lowest reported max speed among connected clients (local player included), or nil when
 -- fewer than two report or all report the same speed (nobody is holding the others back).
-local function SlowestSpeed(clients)
+function SlowestSpeed(clients)
     local slowest, fastest
     for _, client in pairs(clients or {}) do
         local rate = client.connected ~= false and MaxSpeed(client)

@@ -188,6 +188,12 @@ class F11Tests(unittest.TestCase):
         for invalid in (None, -1, float('nan'), float('inf')):
             self.assertEqual(fmt(invalid), '--')
 
+    def test_hook_functions_are_module_globals(self):
+        # FAF's import() hands the hook the module's globals, not the table the file returns.
+        g = self.lua.globals()
+        for name in ('New', 'Ranked', 'FormatWaitDuration', 'MaxSpeed', 'FormatSpeed', 'SlowestSpeed'):
+            self.assertIsNotNone(g[name], name)
+
     def test_max_speed_marks_the_slowest_connected_client(self):
         c = self.clients()
         c[1].maxSP, c[2].maxSP, c[3].maxSP = 3, -2, 0
