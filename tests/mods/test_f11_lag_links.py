@@ -221,8 +221,17 @@ class LagBotTests(unittest.TestCase):
 
     def test_reply_names_top_lagger(self):
         fmt = self.lua.eval('function(s) return s .. "s" end')
-        ranked = self.lua.table_from([{'client': {'name': 'Bob'}, 'totalWaitSeconds': 12}], recursive=True)
-        self.assertEqual(self.g.ReplyText(ranked, fmt), 'Bot: Top lagger is Bob (12s total game wait).')
+        ranked = self.lua.table_from([{'client': {'name': 'Bob'}, 'totalWaitSeconds': 12, 'recentWaitSeconds': 0.5},
+                                      {'client': {'name': 'Cat'}, 'totalWaitSeconds': 4, 'recentWaitSeconds': 3}], recursive=True)
+        self.assertEqual(self.g.ReplyText(ranked, fmt), 'Bot: Most game lag: Bob (12s total). Last 30s: Cat (3s).')
+        quiet = self.lua.table_from([{'client': {'name': 'Bob'}, 'totalWaitSeconds': 12, 'recentWaitSeconds': 0}], recursive=True)
+        self.assertEqual(self.g.ReplyText(quiet, fmt), 'Bot: Most game lag: Bob (12s total). Last 30s: nobody.')
         self.assertEqual(self.g.ReplyText(self.lua.table_from([]), fmt), 'Bot: No lag measured yet.')
+
+    def test_recent_wait_seconds_from_engine_window(self):
+        core = self.lua.execute((MOD / 'modules/analysis.lua').read_text(encoding='utf-8-sig'))
+        clients = self.lua.table_from({1: {'uid': '1', 'name': 'Bob', 'connected': True, 'fafReNetwork': {
+            'waitVersion': 1, 'waitObservedSeconds': 30, 'waitPercent': 10, 'longestWaitMs': 400}}}, recursive=True)
+        self.assertAlmostEqual(core.Ranked(clients)[1].recentWaitSeconds, 3.0)
 
 if __name__ == '__main__': unittest.main()

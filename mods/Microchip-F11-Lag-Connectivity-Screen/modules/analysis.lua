@@ -94,6 +94,8 @@ function Ranked(clients)
                 and data.gameWaitPercent >= 0 and data.gameWaitPercent <= 100.001
             table.insert(rows, {id = id, client = client, measured = valid and client.connected,
                 percent = valid and data.waitPercent or 0, longest = valid and data.longestWaitMs or 0,
+                -- Seconds spent waiting on this peer in the last ~30 s window.
+                recentWaitSeconds = valid and client.connected and data.waitObservedSeconds * data.waitPercent / 100 or nil,
                 gamePercent = gameValid and data.gameWaitPercent or nil,
                 -- gameWaitSeconds is active match duration, not the peer's wait total.
                 -- Recover the cumulative counter from its unrounded engine percentage.

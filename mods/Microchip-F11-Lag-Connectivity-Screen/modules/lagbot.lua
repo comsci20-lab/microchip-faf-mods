@@ -22,13 +22,33 @@ function IsLagQuestion(text)
 end
 
 --- Reply text for ranked F11 rows (analysis.lua Ranked), or nil when nobody has measured wait.
+--- Names the player with the most total game wait (ranked[1]) and, separately, the one with the
+--- most wait in the last 30 seconds.
 function ReplyText(ranked, format)
     local top = ranked and ranked[1]
-    if not top or not top.totalWaitSeconds or top.totalWaitSeconds <= 0 then
+    local recent
+    for _, row in ipairs(ranked or {}) do
+        if row.recentWaitSeconds and row.recentWaitSeconds > 0
+            and (not recent or row.recentWaitSeconds > recent.recentWaitSeconds) then
+            recent = row
+        end
+    end
+    local hasTotal = top and top.totalWaitSeconds and top.totalWaitSeconds > 0
+    if not hasTotal and not recent then
         return 'Bot: No lag measured yet.'
     end
-    return string.format('Bot: Top lagger is %s (%s total game wait).',
-        tostring(top.client.name or 'Player'), format(top.totalWaitSeconds))
+    local text = 'Bot:'
+    if hasTotal then
+        text = text .. string.format(' Most game lag: %s (%s total).',
+            tostring(top.client.name or 'Player'), format(top.totalWaitSeconds))
+    end
+    if recent then
+        text = text .. string.format(' Last 30s: %s (%s).',
+            tostring(recent.client.name or 'Player'), format(recent.recentWaitSeconds))
+    else
+        text = text .. ' Last 30s: nobody.'
+    end
+    return text
 end
 
 function Enabled()
