@@ -96,7 +96,7 @@ function CreateUI()
     SessionClients.FastInterval()
     ConExecute('ren_shownetworkstats true')
     group = Bitmap(GetFrame(0), UIUtil.UIFile('/scx_menu/panel-brd/panel_brd_m.dds'))
-    group.Width:Set(1060); group.Height:Set(height)
+    group.Width:Set(1000); group.Height:Set(height)
     group.Depth:Set(GetFrame(0):GetTopmostDepth() + 10)
     group.wc = UIUtil.CreateWorldCover(group)
     group.border = UIUtil.CreateSCXMenuPanelBorder(group)
@@ -111,16 +111,16 @@ function CreateUI()
     Text(group, 'Avg wait', 15, 555, 30)
     Text(group, 'Longest 30s', 15, 665, 30)
     Text(group, 'Ping', 15, 810, 30)
-    Text(group, 'Max speed', 15, 910, 30)
+    Text(group, 'Max speed', 15, 885, 30)
     rows = {}
     for i = 1, count do
         local bg = Bitmap(group, UIUtil.UIFile('/scx_menu/panel-brd/conn-bg.dds'))
-        bg.Width:Set(1060); bg.Height:Set(rowHeight)
+        bg.Width:Set(1000); bg.Height:Set(rowHeight)
         Layout.AtLeftTopIn(bg, group, 0, 55 + (i - 1) * rowHeight)
         rows[i] = {bg = bg, name = Text(bg, '', 17, 10, 2), note = Text(bg, '', 12, 10, 24),
             percent = Text(bg, '', 17, 250, 2), game = Text(bg, '', 17, 345, 2),
             total = Text(bg, '', 17, 445, 2), average = Text(bg, '', 17, 555, 2), longest = Text(bg, '', 17, 665, 2), ping = Text(bg, '', 17, 810, 2),
-            speed = Text(bg, '', 17, 910, 2)}
+            speed = Text(bg, '', 17, 885, 2)}
     end
     if count == 0 then Text(group, 'No remote players connected.', 16, 10, 60) end
     localRow = Text(group, 'You - Local player', 15, 10, 60 + visible * rowHeight)

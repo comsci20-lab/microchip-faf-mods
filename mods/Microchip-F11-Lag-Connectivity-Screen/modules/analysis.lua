@@ -120,21 +120,27 @@ end
 -- adjustable speed or not). The game runs no faster than the lowest one.
 local function MaxSpeed(client)
     local rate = client and client.maxSP
-    if type(rate) ~= 'number' or rate ~= rate or rate < -10 or rate > 50 then return nil end
+    -- 50 is the engine's starting value (CClientBase) before the client's first report.
+    if type(rate) ~= 'number' or rate ~= rate or rate < -10 or rate >= 50 then return nil end
     return rate
 end
 local function FormatSpeed(rate)
     if not rate then return '--' end
     return rate >= 0 and ('+' .. string.format('%d', rate)) or string.format('%d', rate)
 end
--- Lowest reported max speed among connected clients (local player included), or nil.
+-- Lowest reported max speed among connected clients (local player included), or nil when
+-- fewer than two report or all report the same speed (nobody is holding the others back).
 local function SlowestSpeed(clients)
-    local slowest
+    local slowest, fastest
     for _, client in pairs(clients or {}) do
         local rate = client.connected ~= false and MaxSpeed(client)
-        if rate and (not slowest or rate < slowest) then slowest = rate end
+        if rate then
+            if not slowest or rate < slowest then slowest = rate end
+            if not fastest or rate > fastest then fastest = rate end
+        end
     end
-    return slowest
+    if slowest and slowest < fastest then return slowest end
+    return nil
 end
 return {New = New, Ranked = Ranked, FormatWaitDuration = FormatWaitDuration,
     MaxSpeed = MaxSpeed, FormatSpeed = FormatSpeed, SlowestSpeed = SlowestSpeed}
