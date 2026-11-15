@@ -234,6 +234,26 @@ class LagBotTests(unittest.TestCase):
         self.assertEqual(self.g.ReplyText(quiet, fmt), 'Bot: Most game lag: Bob (12s total). Last 30s: nobody.')
         self.assertEqual(self.g.ReplyText(self.lua.table_from([]), fmt), 'Bot: No lag measured yet.')
 
+    def test_reply_adds_slowest_sim_speed(self):
+        fmt = self.lua.eval('function(s) return s .. "s" end')
+        ranked = self.lua.table_from([{'client': {'name': 'Bob'}, 'totalWaitSeconds': 12, 'recentWaitSeconds': 0}], recursive=True)
+        slow = self.lua.table_from({'names': self.lua.table_from(['Hendog']), 'rate': -2})
+        self.assertEqual(self.g.ReplyText(ranked, fmt, slow),
+                         'Bot: Most game lag: Bob (12s total). Last 30s: nobody. Slowest sim: Hendog (-2).')
+        self.assertEqual(self.g.ReplyText(self.lua.table_from([]), fmt, slow), 'Bot: No lag measured yet. Slowest sim: Hendog (-2).')
+        self.assertEqual(self.g.ReplyText(ranked, fmt, None), 'Bot: Most game lag: Bob (12s total). Last 30s: nobody.')
+
+    def test_slowest_players_from_clients(self):
+        core = self.lua.execute((MOD / 'modules/analysis.lua').read_text(encoding='utf-8-sig'))
+        clients = self.lua.table_from({1: {'name': 'Me', 'connected': True, 'maxSP': 3},
+                                       2: {'name': 'Hendog', 'connected': True, 'maxSP': -2},
+                                       3: {'name': 'Gone', 'connected': False, 'maxSP': -9}}, recursive=True)
+        slow = self.g.SlowestPlayers(clients, core)
+        self.assertEqual(slow.rate, -2)
+        self.assertEqual(list(slow.names.values()), ['Hendog'])
+        same = self.lua.table_from({1: {'name': 'A', 'connected': True, 'maxSP': 1}, 2: {'name': 'B', 'connected': True, 'maxSP': 1}}, recursive=True)
+        self.assertIsNone(self.g.SlowestPlayers(same, core))
+
     def test_recent_wait_seconds_from_engine_window(self):
         core = self.lua.execute((MOD / 'modules/analysis.lua').read_text(encoding='utf-8-sig'))
         clients = self.lua.table_from({1: {'uid': '1', 'name': 'Bob', 'connected': True, 'fafReNetwork': {
