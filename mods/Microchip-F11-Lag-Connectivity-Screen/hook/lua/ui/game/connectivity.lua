@@ -48,10 +48,12 @@ function PingUpdate()
             slot.note:SetColor('ffffaa66')
             local band = Bands and Bands.ColourForName(client.name)
             slot.name:SetColor(client.connected and (band or 'ffffffff') or 'ffff5555')
-            slot.percent:SetText(item.measured and string.format('%s %.1f%%',
-                LagLinks.FormatWaitDuration(item.recentWaitSeconds), item.percent) or '--')
+            slot.recent:SetText(item.measured and LagLinks.FormatWaitDuration(item.recentWaitSeconds) or '--')
+            slot.percent:SetText(item.measured and string.format('%.1f%%', item.percent) or '--')
             slot.longest:SetText(item.measured and string.format('%.0f ms', item.longest) or '--')
-            slot.percent:SetColor(item.measured and (item.percent < 1 and 'ff66ff66' or item.percent < 5 and 'ffffff66' or item.percent < 15 and 'ffffaa33' or 'ffff5555') or 'ffaaaaaa')
+            local recentColor = item.measured and (item.percent < 1 and 'ff66ff66' or item.percent < 5 and 'ffffff66' or item.percent < 15 and 'ffffaa33' or 'ffff5555') or 'ffaaaaaa'
+            slot.recent:SetColor(recentColor)
+            slot.percent:SetColor(recentColor)
             slot.longest:SetColor(item.measured and WaitColor(item.longest) or 'ffaaaaaa')
             local g = item.gamePercent
             slot.game:SetText(g and string.format('%.1f%%', g) or '--')
@@ -106,22 +108,23 @@ function CreateUI()
     Layout.AtTopIn(title, group.border.tm, 12); Layout.AtHorizontalCenterIn(title, group)
     Text(group, 'Waiting for player commands', 14, 10, 4)
     Text(group, 'Player', 15, 10, 30)
-    Text(group, 'Wait 30s', 15, 250, 30)
-    Text(group, 'Wait game', 15, 345, 30)
-    Text(group, 'Total wait', 15, 445, 30)
-    Text(group, 'Avg wait', 15, 555, 30)
-    Text(group, 'Longest 30s', 15, 665, 30)
-    Text(group, 'Ping', 15, 810, 30)
-    Text(group, 'Max speed', 15, 885, 30)
+    Text(group, 'Wait 30s', 15, 230, 30)
+    Text(group, '30s %', 15, 310, 30)
+    Text(group, 'Wait game', 15, 380, 30)
+    Text(group, 'Total wait', 15, 475, 30)
+    Text(group, 'Avg wait', 15, 575, 30)
+    Text(group, 'Longest 30s', 15, 670, 30)
+    Text(group, 'Ping', 15, 800, 30)
+    Text(group, 'Max speed', 15, 880, 30)
     rows = {}
     for i = 1, count do
         local bg = Bitmap(group, UIUtil.UIFile('/scx_menu/panel-brd/conn-bg.dds'))
         bg.Width:Set(1000); bg.Height:Set(rowHeight)
         Layout.AtLeftTopIn(bg, group, 0, 55 + (i - 1) * rowHeight)
         rows[i] = {bg = bg, name = Text(bg, '', 17, 10, 2), note = Text(bg, '', 12, 10, 24),
-            percent = Text(bg, '', 17, 250, 2), game = Text(bg, '', 17, 345, 2),
-            total = Text(bg, '', 17, 445, 2), average = Text(bg, '', 17, 555, 2), longest = Text(bg, '', 17, 665, 2), ping = Text(bg, '', 17, 810, 2),
-            speed = Text(bg, '', 17, 885, 2)}
+            recent = Text(bg, '', 17, 230, 2), percent = Text(bg, '', 17, 310, 2), game = Text(bg, '', 17, 380, 2),
+            total = Text(bg, '', 17, 475, 2), average = Text(bg, '', 17, 575, 2), longest = Text(bg, '', 17, 670, 2), ping = Text(bg, '', 17, 800, 2),
+            speed = Text(bg, '', 17, 880, 2)}
     end
     if count == 0 then Text(group, 'No remote players connected.', 16, 10, 60) end
     localRow = Text(group, 'You - Local player', 15, 10, 60 + visible * rowHeight)
