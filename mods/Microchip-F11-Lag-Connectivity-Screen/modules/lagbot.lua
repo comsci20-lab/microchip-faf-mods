@@ -1,6 +1,8 @@
 -- Answers "who is lagging?" chat questions with the player who has the most total game wait.
 local PREF = 'microchip_f11_lag_bot'
-local COOLDOWN = 30
+-- Short enough that a second player asking a few seconds later still gets an answer
+-- (replay 28118078: questions 6 s apart, the second was ignored); long enough to stop chat loops.
+local COOLDOWN = 5
 local lastReply
 
 local function Words(text)
