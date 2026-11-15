@@ -188,6 +188,18 @@ class F11Tests(unittest.TestCase):
         for invalid in (None, -1, float('nan'), float('inf')):
             self.assertEqual(fmt(invalid), '--')
 
+    def test_max_speed_marks_the_slowest_connected_client(self):
+        c = self.clients()
+        c[1].maxSP, c[2].maxSP, c[3].maxSP = 3, -2, 0
+        self.assertEqual(self.core.SlowestSpeed(c), -2)
+        self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[1])), '+3')
+        self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[2])), '-2')
+        c[2].connected = False
+        self.assertEqual(self.core.SlowestSpeed(c), 0)
+        c[3].maxSP = 1000  # out of the engine's range: unknown, not slowest
+        self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[3])), '--')
+        self.assertEqual(self.core.SlowestSpeed(c), 3)
+
 class LagBotTests(unittest.TestCase):
     def setUp(self):
         self.lua = LuaRuntime(unpack_returned_tuples=True)

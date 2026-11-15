@@ -116,4 +116,25 @@ function Ranked(clients)
     end)
     return rows
 end
-return {New = New, Ranked = Ranked, FormatWaitDuration = FormatWaitDuration}
+-- maxSP: the speed this client's PC measured it can run (CLIMSG_IntParam, every client sends it,
+-- adjustable speed or not). The game runs no faster than the lowest one.
+local function MaxSpeed(client)
+    local rate = client and client.maxSP
+    if type(rate) ~= 'number' or rate ~= rate or rate < -10 or rate > 50 then return nil end
+    return rate
+end
+local function FormatSpeed(rate)
+    if not rate then return '--' end
+    return rate >= 0 and ('+' .. string.format('%d', rate)) or string.format('%d', rate)
+end
+-- Lowest reported max speed among connected clients (local player included), or nil.
+local function SlowestSpeed(clients)
+    local slowest
+    for _, client in pairs(clients or {}) do
+        local rate = client.connected ~= false and MaxSpeed(client)
+        if rate and (not slowest or rate < slowest) then slowest = rate end
+    end
+    return slowest
+end
+return {New = New, Ranked = Ranked, FormatWaitDuration = FormatWaitDuration,
+    MaxSpeed = MaxSpeed, FormatSpeed = FormatSpeed, SlowestSpeed = SlowestSpeed}
