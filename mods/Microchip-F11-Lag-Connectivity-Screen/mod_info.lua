@@ -1,7 +1,7 @@
 name = 'Microchip F11 Lag Connectivity Screen'
 uid = 'c1a64e93-148b-4ac3-9152-308879f11401'
 version = 8
-description = 'Ranks peers by measured waiting time, with whole-game cumulative and average wait, longest wait, ping and each player's max sim speed (slowest highlighted) in F11. Accurate timing requires the custom faf-re engine; classic engines show unavailable wait metrics. Optional chat bot answers "who is lagging?" with the top lagger (UI Mods Options).'
+description = 'Ranks peers by measured waiting time, with whole-game cumulative and average wait, longest wait, ping and the max sim speed of each player (slowest highlighted) in F11. Accurate timing requires the custom faf-re engine; classic engines show unavailable wait metrics. Optional chat bot answers "who is lagging?" with the top lagger (UI Mods Options).'
 author = 'Microchip'
 exclusive = false
 ui_only = true
