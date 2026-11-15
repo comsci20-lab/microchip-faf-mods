@@ -196,6 +196,8 @@ class F11Tests(unittest.TestCase):
         self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[2])), '-2')
         c[2].connected = False
         self.assertEqual(self.core.SlowestSpeed(c), 0)
+        c[3].maxSP = 23  # very fast PCs are capped at +10
+        self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[3])), '+10')
         c[3].maxSP = 50  # the engine's value before a first report: unknown, not slowest
         self.assertEqual(self.core.FormatSpeed(self.core.MaxSpeed(c[3])), '--')
         self.assertIsNone(self.core.SlowestSpeed(c))  # only one known speed left

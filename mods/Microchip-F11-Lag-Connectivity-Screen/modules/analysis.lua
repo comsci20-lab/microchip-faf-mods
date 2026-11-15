@@ -122,7 +122,8 @@ local function MaxSpeed(client)
     local rate = client and client.maxSP
     -- 50 is the engine's starting value (CClientBase) before the client's first report.
     if type(rate) ~= 'number' or rate ~= rate or rate < -10 or rate >= 50 then return nil end
-    return rate
+    -- Anything above +10 is far faster than a game ever runs; cap it so it reads as "+10".
+    return math.min(rate, 10)
 end
 local function FormatSpeed(rate)
     if not rate then return '--' end
